@@ -1,99 +1,80 @@
 import logging
 import random
-import numpy
-import scipy.weave
+import numpy as np
 from pprint import pprint
+import matplotlib.pyplot as plt
 
-#macro
+
 v = False
-v2 = False
-t = False
-server = False
+v2=True
+def run(p,k):
+  randArr = np.array(random.sample(xrange(p), k))
 
-loc = '/Users/yifanwu/Dropbox/C3F/CS222/HW3/data/'
-# the random number selector for set k given p (upper bound)
-def getK(p,k):
-  return random.sample(xrange(p), k)
+  if v:
+    pprint(randArr)
 
-def naiveHash(a,b,x,p):
-  return (a*x+b)%p
+  dtype = [('h_val', int),('idx', int)]
 
+  hashVal = np.zeros(k,dtype=dtype)
+  countArr = np.zeros(k)
 
-def maxNmin(p, k):
-  # p1 = 49937 and k = 16, 64, and 256
-  k_set = getK(p, k)
-  if t:
-    pprint(k_set)
-  min_count = [0] * k  
-  #hash_dict = {}
+  total_hash = np.multiply(p,p-1).astype(float)
   for a in xrange(1,p):
+    for i in xrange(0,k):
+      hashVal['idx'][i] = i
+      hashVal['h_val'][i] = np.mod(np.multiply(a,randArr[i]),p)
+
+    sortedVal = np.sort(hashVal, order='h_val') #increasing order
+
     if v:
-      print "a: "+str(a)
-        
-    for b in xrange(1,p):
-      if v:
-        print "b: "+str(b)
+      print "sortedVal: "
+      pprint(sortedVal)
+      print "\n"
 
+    hash_min = sortedVal['h_val'][0]
+    hash_max = sortedVal['h_val'][k-1]
 
+    countArr[sortedVal['idx'][0]]=countArr[sortedVal['idx'][0]]+p-hash_max+hash_min
 
-      hash_min = (p+1,p) #reset  
-      
-      for i in xrange(0,k):
-        ele = k_set[i]
-        hash_val = naiveHash(a, b, ele, p)
-        if hash_val < hash_min[1]:
-          hash_min = (i,hash_val)
-          if v:
-            print "min: "+str(hash_min[1])
-    
-      min_count[hash_min[0]] = min_count[i] + 1          
-  if t:
-    pprint(min_count)
+    for j in xrange(1,k):
+      countArr[sortedVal['idx'][j]]=countArr[sortedVal['idx'][j]]+sortedVal['h_val'][j]-sortedVal['h_val'][j-1]
 
-  sorted_count = sorted(min_count)
-  total_hash = (p-1)*p
+    if v:
+      print "current countArr: "
+      pprint(countArr)
+  
   if v2:
-    pprint(sorted_count)
-    print str(total_hash)
-  frac_min = float(sorted_count[0])/float(total_hash)
-  frac_max = float(sorted_count[-1])/float(total_hash)
-  return (frac_min,frac_max)
+    print "FINAL COUNT"
+    pprint(countArr)
+
+  f1 = countArr.min().astype(float)/total_hash
+  f2 = countArr.max().astype(float)/total_hash
+  
+  print "f1: "+str(f1)
+  print "f2: "+str(f2)
+
+  return (f1,f2)
 
 def main():
   logging.basicConfig(format='%(asctime)s %(message)s')
   logging.warning('started')
-  
   p = 49937
   k = 16
-  num_iter = 1000
-  if t:
-    p = 87
-    k = 10
-    num_iter = 5
-  
-  add = ""
-  if server:
-    add = 'Q4test.csv'
-  else:
-    add = loc+'Q4test.csv'
-  f_s = open(add,'w+')
-  f_s.write('min_frac,max_frac\n')
+  ITR = 1000
+  f1Arr = np.zeros(ITR)
+  f2Arr = np.zeros(ITR)
 
-  for x in xrange(0,num_iter):
-    result_tuple = maxNmin(p, k)
-    c_min = str(result_tuple[0])
-    c_max = str(result_tuple[1])
-    print "min: "+c_min+"\t"+"max: "+c_max
-    f_s.write(c_min+","+c_max+"\n")
+  for it in xrange(0,ITR):
+    r_val = run(p, k)
+    f1Arr[it] = r_val[0]
+    f2Arr[it] = r_val[1]
+  
+  plt.plot(f1Arr,'r--',f2Arr, 'b--')
+  plt.show()
+
 
   logging.basicConfig(format='%(asctime)s %(message)s')
   logging.warning('ended')
+
+
 main()
-
-################ TESTS ################
-def test():
-  x = 1
-  y = 2
-  print float(x)/float(y)
-
-#test()

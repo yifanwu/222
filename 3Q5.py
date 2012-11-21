@@ -1,12 +1,13 @@
-#p1 = 49, 937 and k = 16, 64, and 256
+C_num = 500
+H_num = 4
+T_num = 100
 
-#hashing
-def l_hash(a,x,b,p):
-  return (ax+b)%p
+def f_O(conserv):
+  for i in xrange(1,10)
 
-# helper function, probably not going to be needed
-def shuffle():  
-  from random import shuffle
-  x = [[i] for i in range(10)]
-  shuffle(x)
 
+
+
+
+def main():
+  conserv = True
