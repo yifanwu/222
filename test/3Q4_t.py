@@ -57,7 +57,7 @@ def run(p,k):
   return (f1,f2)
 
 def threadFunc(I_sub,p,k):
-  f_w = open('3Q_k_16.csv','a')
+  f_w = open('3Q_k_64.csv','a')
   for it in xrange(0,I_sub):
       r_val = run(p, k)
       f_w.write(str(r_val[0])+","+str(r_val[1])+"\n")
@@ -67,10 +67,10 @@ def main():
   logging.basicConfig(format='%(asctime)s %(message)s')
   logging.warning('started')
   p = 49937
-  k = 16
+  k = 64
   ITR = 100
   T_num = 10
-  f_w = open('3Q_k_16.csv','w+')
+  f_w = open('3Q_k_64.csv','w+')
   f_w.close()
     
   for t_c in xrange(0,T_num): 
