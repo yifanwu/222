@@ -72,7 +72,6 @@ def main():
   plt.plot(f1Arr,'r--',f2Arr, 'b--')
   plt.show()
 
-
   logging.basicConfig(format='%(asctime)s %(message)s')
   logging.warning('ended')
 

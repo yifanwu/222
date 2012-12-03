@@ -1,6 +1,5 @@
 import logging
 import random
-import threading as trd
 import numpy as np
 from pprint import pprint
 import matplotlib.pyplot as plt
@@ -17,7 +16,7 @@ def run(p,k):
   dtype = [('h_val', int),('idx', int)]
 
   hashVal = np.zeros(k,dtype=dtype)
-  countArr = np.zeros(k)
+  countArr = np.zeros(k,dtype=np.int)
 
   total_hash = np.multiply(p,p-1).astype(float)
   for a in xrange(1,p):
@@ -56,29 +55,27 @@ def run(p,k):
 
   return (f1,f2)
 
-def threadFunc(I_sub,p,k):
-  f_w = open('3Q_k_64.csv','a')
-  for it in xrange(0,I_sub):
-      r_val = run(p, k)
-      f_w.write(str(r_val[0])+","+str(r_val[1])+"\n")
-
-
 def main():
   logging.basicConfig(format='%(asctime)s %(message)s')
   logging.warning('started')
   p = 49937
-  k = 64
-  ITR = 100
-  T_num = 10
-  f_w = open('3Q_k_64.csv','w+')
+  k = 256
+  ITR = 1000
+  f_w = open('3Q_k_256.csv','w+')
+
+#  f1Arr = np.zeros(ITR)
+ # f2Arr = np.zeros(ITR)
+
+  for it in xrange(0,ITR):
+    r_val = run(p, k)
+    line = str(r_val[0])+","+str(r_val[1])+"\n"
+    print line
+    f_w.write(line)
+  
   f_w.close()
-    
-  for t_c in xrange(0,T_num): 
-    t = trd.Thread(target=threadFunc, args=(ITR,p,k,))
-    t.start()
-    #t.run()
   
   logging.basicConfig(format='%(asctime)s %(message)s')
   logging.warning('ended')
+
 
 main()
