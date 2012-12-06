@@ -5,12 +5,13 @@ import numpy as np
 
 #macros
 TAB_SIZE = 16384
-MAX_TRIES = 100
+MAX_TRIES = 500
 MAX_RUN = 1000
-NUM_HASH = 2
+NUM_HASH = 3
 v = False
 vv = False
 t = False
+split = False
 
 if t:
     TAB_SIZE = 100
@@ -73,6 +74,8 @@ def kick(kick_ele, original_loc):
 def cuckoo():
     global val_tab, hash_tab
 
+    bucket = TAB_SIZE/NUM_HASH
+            
     #reset
     val_tab = np.zeros((TAB_SIZE,2),dtype=int)
 
@@ -92,7 +95,10 @@ def cuckoo():
         #must be initialized in separate process 
         #to make sure that we could stop at the first one
         #to make sure that there are no repeats
-        hash_val_set = random.sample(range(TAB_SIZE), NUM_HASH)
+        if split:
+            hash_val_set = [np.random.random_integers(bucket),bucket+np.random.random_integers(bucket-1),2*bucket+np.random.random_integers(bucket-1)]
+        else:    
+            hash_val_set = random.sample(range(TAB_SIZE), NUM_HASH)
 
         for x in xrange(0,NUM_HASH):
             #hash_val = np.random.randint(TAB_SIZE)
@@ -141,19 +147,16 @@ def cuckoo():
 
 def main():
     global NUM_HASH
+    for i in xrange(0, MAX_RUN):
+        ave_val += cuckoo()
+    print ave_val/MAX_RUN
 
-    for j in xrange(2,4):
-        NUM_HASH = j
-        ave_val = 0        
-        for i in xrange(0, MAX_RUN):
-            ave_val += cuckoo()
-        print "Average number of possible inputs "+str(ave_val/MAX_RUN)
 
 if t:
     cuckoo()
 else:
-    #cuckoo()
+    cuckoo()
 
-    main()
+    #main()
 
 
