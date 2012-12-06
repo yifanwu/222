@@ -54,7 +54,7 @@ def coinBSC(k,p):
         if v: print ele
         val += ele#np.divide(,np.add(np.power(p,2*(k-i)+1),np.power((1-p),2*(k-i)+1)))
 
-    print val
+    print 1-val
 
 def runBSC():
     for k in xrange(1,7):

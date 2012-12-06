@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from pprint import pprint
 
 def hash_plot():
-    loc_3_hash = 'sorted_3_hash.txt'
+    loc_3_hash = 'sorted_2_hash.txt'
     x=[]
     with open(loc_3_hash) as f:
         for line in f:
